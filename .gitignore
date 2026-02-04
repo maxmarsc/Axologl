@@ -1,0 +1,9 @@
+build
+debug
+release
+lib
+*.bz2
+*.elf
+*.nacp
+*.nro
+compile_commands.json
