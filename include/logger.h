@@ -26,8 +26,9 @@
 
 namespace axologl
 {
-    extern bool ansi;
-    extern LogLevel logLevel;
+    extern bool _ansi;
+    extern LogLevel _logLevel;
+    extern FileLogger* _fileLogger;
 
     class Logger
     {
@@ -49,10 +50,16 @@ namespace axologl
 
         bool shouldLog()
         {
-            return (this->getLogLevel() >= logLevel);
+            return this->getLogLevel() >= _logLevel;
         }
 
-        void logToFile(const std::string& text);
+        static void logToFile(const std::string& text)
+        {
+            if (_fileLogger != nullptr)
+            {
+                _fileLogger->log(text);
+            }
+        }
 
         static void logToStdout(const std::string& text)
         {
@@ -77,7 +84,8 @@ namespace axologl
             if (shouldLog())
             {
                 format(text);
-                if (ansi) colorize(text);
+                logToFile(text);
+                if (_ansi) colorize(text);
                 logToStdout(text);
                 logToStderr(text);
             }

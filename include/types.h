@@ -38,6 +38,13 @@ namespace axologl
         bool redirectStderr = false;
     };
 
+    struct FileLoggerOptions
+    {
+        bool enable = false;
+        bool logStdout = false;
+        bool logStderr = false;
+    };
+
     struct AxologlOptions
     {
         LogLevel logLevel = Warning;

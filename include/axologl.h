@@ -22,6 +22,7 @@
 #include <iostream>
 #include <switch.h>
 
+#include "file.h"
 #include "types.h"
 #include "loggers/debug.h"
 #include "loggers/info.h"
@@ -40,8 +41,34 @@ namespace axologl
         logger::WarningLogger warnLogger;
         logger::ErrorLogger errorLogger;
         logger::FatalLogger fatalLogger;
+        bool nxlinkEnabled = false;
 
     public:
+        explicit Axologl(const NxLinkOptions& opts)
+        {
+            if (opts.enable)
+            {
+                nxlinkEnabled = true;
+                socketInitializeDefault();
+                nxlinkConnectToHost(opts.redirectStdout, opts.redirectStderr);
+            }
+            debug("Axologl Initialised!");
+        }
+
+        ~Axologl()
+        {
+            debug("Axologl shutting down...");
+            if (nxlinkEnabled)
+            {
+                socketExit();
+            }
+        }
+
+        [[nodiscard]] bool getNxlinkEnabled() const
+        {
+            return nxlinkEnabled;
+        }
+
         void debug(std::string text)
         {
             this->debugLogger.log(text);
@@ -73,114 +100,109 @@ namespace axologl
         }
     };
 
-    inline Axologl* axologl = nullptr;
-    inline LogLevel logLevel;
-    inline bool nxlinkEnabled = false;
-    inline bool nxlinkErr = false;
-    inline bool nxlinkOut = false;
-    inline bool ansi = false;
-    inline bool logfileEnabled = false;
-    inline std::string logPath;
+    inline Axologl* _axologl = nullptr;
+    inline FileLogger* _fileLogger = nullptr;
+    inline LogLevel _logLevel;
+    inline bool _ansi = false;
+    inline bool _logfileEnabled = false;
+    inline std::string _logPath;
 
     inline void configure(const AxologlOptions& options)
     {
-        if (axologl != nullptr)
+        if (_axologl != nullptr)
         {
-            axologl->error("Axologl has already been configured!");
-            axologl->error("If you need to change the configuration options, make use of the `set<option>` commands.");
+            _axologl->error("Axologl has already been configured!");
+            _axologl->error("If you need to change the configuration options, make use of the `set<option>` commands.");
             return;
         }
 
-        axologl = new Axologl();
-
-        logLevel = options.logLevel;
-        nxlinkEnabled = options.nxLinkOpts.enable;
-        nxlinkErr = options.nxLinkOpts.redirectStderr;
-        nxlinkOut = options.nxLinkOpts.redirectStdout;
-        ansi = options.ansiOutput;
-
-        if (nxlinkEnabled)
-        {
-            socketInitializeDefault();
-            nxlinkConnectToHost(nxlinkOut, nxlinkErr);
-        }
+        _logLevel = options.logLevel;
+        _ansi = options.ansiOutput;
 
         if (!options.logPath.empty())
         {
-            logPath = options.logPath;
-            logfileEnabled = true;
+            _logPath = options.logPath;
+            try
+            {
+                _fileLogger = new FileLogger(options.logPath);
+                _logfileEnabled = true;
+            }
+            catch (const std::exception& e)
+            {
+                _axologl->error("Unable to create file logger; disabling file logging");
+                _axologl->error(e.what());
+            }
         }
+
+        _axologl = new Axologl(options.nxLinkOpts);
     }
 
     inline void teardown()
     {
-        if (nxlinkEnabled)
-        {
-            socketExit();
-        }
+        delete _axologl;
     }
 
     inline void printConfiguration()
     {
-        axologl->debug("Axologl Configuration:");
-        axologl->debug("Log Level: " + std::to_string(logLevel));
+        _axologl->debug("Axologl Configuration:");
+        _axologl->debug("Log Level: " + std::to_string(_logLevel));
         const std::string nxlinkStatus = "nxlink: ";
-        axologl->debug(nxlinkStatus + (nxlinkEnabled ? "enabled" : "disabled"));
+        _axologl->debug(nxlinkStatus + (_axologl->getNxlinkEnabled() ? "enabled" : "disabled"));
         const std::string ansiStatus = "ANSI Output: ";
-        axologl->debug(ansiStatus + (ansi ? "enabled" : "disabled"));
-        if (logfileEnabled)
+        _axologl->debug(ansiStatus + (_ansi ? "enabled" : "disabled"));
+        if (_logfileEnabled)
         {
-            axologl->debug("Logging to file: " + logPath);
+            _axologl->debug("Logging to file: " + _logPath);
         }
         else
         {
-            axologl->debug("Logging to file not enabled");
+            _axologl->debug("Logging to file not enabled");
         }
     }
 
     inline void enableAnsi()
     {
-        ansi = true;
+        _ansi = true;
     }
 
     inline void disableAnsi()
     {
-        ansi = false;
+        _ansi = false;
     }
 
-    inline void setLevel(const LogLevel level)
+    inline void setLogLevel(const LogLevel level)
     {
-        logLevel = level;
+        _logLevel = level;
     }
 
     inline void debug(const std::string& text)
     {
-        axologl->debug(text);
+        _axologl->debug(text);
     }
 
     inline void info(const std::string& text)
     {
-        axologl->info(text);
+        _axologl->info(text);
     }
 
     inline void notice(const std::string& text)
     {
-        axologl->notice(text);
+        _axologl->notice(text);
     }
 
     inline void warn(const std::string& text)
     {
-        axologl->warn(text);
+        _axologl->warn(text);
     }
 
     inline void error(const std::string& text)
     {
-        axologl->error(text);
+        _axologl->error(text);
     }
 
     inline void fatal(const std::string& text)
     {
-        axologl->fatal(text);
+        _axologl->fatal(text);
     }
 }
 #endif //AXOLOGL_AXOLOGL_H
