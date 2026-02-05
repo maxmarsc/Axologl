@@ -30,6 +30,7 @@
 #include "loggers/warn.h"
 #include "loggers/error.h"
 #include "loggers/fatal.h"
+#include "loggers/raw.h"
 
 namespace axologl
 {
@@ -41,6 +42,7 @@ namespace axologl
         logger::WarningLogger warnLogger;
         logger::ErrorLogger errorLogger;
         logger::FatalLogger fatalLogger;
+        logger::RawLogger rawLogger;
         bool nxlinkEnabled = false;
 
     public:
@@ -97,6 +99,11 @@ namespace axologl
         void fatal(std::string text)
         {
             this->fatalLogger.log(text);
+        }
+
+        void log(std::string text)
+        {
+            this->rawLogger.log(text);
         }
     };
 
@@ -173,6 +180,11 @@ namespace axologl
     inline void setLogLevel(const LogLevel level)
     {
         _logLevel = level;
+    }
+
+    inline void log(const std::string& text)
+    {
+        _axologl->log(text);
     }
 
     inline void debug(const std::string& text)

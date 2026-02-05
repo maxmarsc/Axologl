@@ -36,16 +36,22 @@ namespace axologl
 
         void format(std::string& text)
         {
-            text.insert(0, 1, ' ');
-            text.insert(0, 1, ']');
-            text.insert(0, this->getPrefix());
-            text.insert(0, 1, '[');
+            if (this->getLogLevel() != Raw)
+            {
+                text.insert(0, 1, ' ');
+                text.insert(0, 1, ']');
+                text.insert(0, this->getPrefix());
+                text.insert(0, 1, '[');
+            }
         }
 
         void colorize(std::string& text)
         {
-            text.insert(0, this->getAnsiCode());
-            text.append(this->ansiReset);
+            if (this->getLogLevel() != Raw)
+            {
+                text.insert(0, this->getAnsiCode());
+                text.append(this->ansiReset);
+            }
         }
 
         bool shouldLog()

@@ -16,43 +16,33 @@
  *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#ifndef AXOLOGL_TYPES_H
-#define AXOLOGL_TYPES_H
+#ifndef AXOLOGL_RAW_H
+#define AXOLOGL_RAW_H
+#include "logger.h"
 
-namespace axologl
+namespace axologl::logger
 {
-    enum LogLevel
+    class RawLogger : public Logger
     {
-        Debug,
-        Info,
-        Notice,
-        Warning,
-        Error,
-        Fatal,
-        Raw
-    };
+        const LogLevel logLevel = Raw;
+        const std::string prefix;
+        const std::string ansiCode;
 
-    struct NxLinkOptions
-    {
-        bool enable = false;
-        bool redirectStdout = false;
-        bool redirectStderr = false;
-    };
+    protected:
+        std::string getPrefix() override
+        {
+            return prefix;
+        }
 
-    struct FileLoggerOptions
-    {
-        bool enable = false;
-        bool logStdout = false;
-        bool logStderr = false;
-    };
+        std::string getAnsiCode() override
+        {
+            return ansiCode;
+        }
 
-    struct AxologlOptions
-    {
-        LogLevel logLevel = Warning;
-        NxLinkOptions nxLinkOpts;
-        bool ansiOutput = true;
-        std::string logPath;
+        LogLevel getLogLevel() override
+        {
+            return logLevel;
+        }
     };
 }
-
-#endif //AXOLOGL_TYPES_H
+#endif //AXOLOGL_RAW_H
