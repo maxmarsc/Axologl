@@ -27,7 +27,7 @@ namespace axologl::logger
     {
         const LogLevel logLevel = Debug;
         const std::string prefix = "DEBUG";
-        const std::string ansiCode = "\033[32m";
+        const std::string ansiCode = "\033[35m";
 
     protected:
         std::string getPrefix() override
