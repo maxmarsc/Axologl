@@ -27,17 +27,17 @@ namespace axologl
     class FileLogger
     {
         fs::path _logPath;
-        FILE* logFile;
+        FILE* logFile = nullptr;
 
         [[nodiscard]] bool ensurePath() const
         {
-            const fs::path parentPath = getParentPath();
-            if (fs::exists(parentPath))
+            if (!fs::create_directories(getParentPath()))
             {
-                return true;
+                // Check the directory doesn't already exist
+                return fs::exists(getParentPath());
             }
 
-            return fs::create_directories(parentPath);
+            return true;
         }
 
         void write(const std::string& text) const
@@ -65,32 +65,35 @@ namespace axologl
         {
             _logPath = logPath;
             // Check our write path exists, create it if not
-            if (!ensurePath())
+            if (ensurePath())
             {
-                // Something dodgy happened! Better let the caller know and disable file logging
-                throw std::logic_error("Unable to create log path");
-            }
-            // Check if we were provided a filename
-            if (getLogFilename() != "")
-            {
-                // Check if we need to rotate files
-                if (getLogFileExists())
+                // Check if we were provided a filename
+                if (getLogFilename() != "")
                 {
-                    // Rotate out file here
+                    // Check if we need to rotate files
+                    if (getLogFileExists())
+                    {
+                        // Rotate out file here
+                    }
                 }
-            }
-            else
-            {
-                // Use a default filename
-                _logPath.append("/axologl.log");
-            }
+                else
+                {
+                    // Use a default filename
+                    _logPath.append("/axologl.log");
+                }
 
-            logFile = fopen(_logPath.c_str(), "a+");
+                logFile = fopen(_logPath.c_str(), "a+");
+            }
         }
 
         ~FileLogger()
         {
             fclose(logFile);
+        }
+
+        [[nodiscard]] bool ready() const
+        {
+            return logFile != nullptr;
         }
 
         void log(const std::string& text) const

@@ -129,19 +129,15 @@ namespace axologl
         if (!options.logPath.empty())
         {
             _logPath = options.logPath;
-            try
-            {
-                _fileLogger = new FileLogger(options.logPath);
-                _logfileEnabled = true;
-            }
-            catch (const std::exception& e)
-            {
-                _axologl->error("Unable to create file logger; disabling file logging");
-                _axologl->error(e.what());
-            }
+            _fileLogger = new FileLogger(options.logPath);
+            _logfileEnabled = _fileLogger && _fileLogger->ready();
         }
 
         _axologl = new Axologl(options.nxLinkOpts);
+        if (!_logfileEnabled)
+        {
+            _axologl->error("Unable to create file logger; file logging disabled!");
+        }
     }
 
     inline void teardown()
