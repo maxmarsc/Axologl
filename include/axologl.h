@@ -19,7 +19,6 @@
 #ifndef AXOLOGL_AXOLOGL_H
 #define AXOLOGL_AXOLOGL_H
 #include <string>
-#include <iostream>
 #include <switch.h>
 
 #include "file.h"
@@ -34,7 +33,7 @@
 
 namespace axologl
 {
-    class Axologl
+    class Axologl final
     {
         logger::DebugLogger debugLogger;
         logger::InfoLogger infoLogger;
@@ -114,6 +113,11 @@ namespace axologl
     inline bool _logfileEnabled = false;
     inline std::string _logPath;
 
+    /**
+     * Configure Axologl for use with the specified options. This should be called as early as possible.
+     *
+     * @param options A set of options to initialize Axologl with
+     */
     inline void configure(const AxologlOptions& options)
     {
         if (_axologl != nullptr)
@@ -140,11 +144,17 @@ namespace axologl
         }
     }
 
+    /**
+     * Perform clean-up related to the library. This should be called before `consoleExit()`.
+     */
     inline void teardown()
     {
         delete _axologl;
     }
 
+    /**
+     * Prints the current Axologl configuration
+     */
     inline void printConfiguration()
     {
         _axologl->debug("Axologl Configuration:");
@@ -178,6 +188,11 @@ namespace axologl
         _logLevel = level;
     }
 
+    /**
+     * Log a plain, unprefixed message
+     *
+     * @param text
+     */
     inline void log(const std::string& text)
     {
         _axologl->log(text);
@@ -213,12 +228,22 @@ namespace axologl
         _axologl->fatal(text);
     }
 
+    /**
+     * Log an unprefixed message in green (if ANSI colours are enabled)
+     *
+     * @param text
+     */
     inline void success(const std::string& text)
     {
         const std::string green = "\033[32m";
         _axologl->log(text, &green);
     }
 
+    /**
+     * Log an unprefixed message in red (if ANSI colours are enabled)
+     *
+     * @param text
+     */
     inline void failure(const std::string& text)
     {
         const std::string red = "\033[31m";
