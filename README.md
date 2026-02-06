@@ -1,5 +1,7 @@
 # Axologl
 
+<img src="assets/axologl.png" alt="Axologl logo" width="256">
+
 A simple logging library for Nintendo Switch homebrew designed to integrate with `libnx` and `nxlink`.
 
 ---
