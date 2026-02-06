@@ -101,9 +101,9 @@ namespace axologl
             this->fatalLogger.log(text);
         }
 
-        void log(std::string text)
+        void log(std::string text, const std::string* ansiCode = nullptr)
         {
-            this->rawLogger.log(text);
+            this->rawLogger.log(text, ansiCode);
         }
     };
 
@@ -211,6 +211,18 @@ namespace axologl
     inline void fatal(const std::string& text)
     {
         _axologl->fatal(text);
+    }
+
+    inline void success(const std::string& text)
+    {
+        const std::string green = "\033[32m";
+        _axologl->log(text, &green);
+    }
+
+    inline void failure(const std::string& text)
+    {
+        const std::string red = "\033[31m";
+        _axologl->log(text, &red);
     }
 }
 #endif //AXOLOGL_AXOLOGL_H

@@ -36,7 +36,7 @@ namespace axologl
 
         void format(std::string& text)
         {
-            if (this->getLogLevel() != Raw)
+            if (!this->getPrefix().empty())
             {
                 text.insert(0, 1, ' ');
                 text.insert(0, 1, ']');
@@ -45,11 +45,19 @@ namespace axologl
             }
         }
 
-        void colorize(std::string& text)
+        void colorize(std::string& text, const std::string* ansiCode = nullptr)
         {
-            if (this->getLogLevel() != Raw)
+            if (ansiCode == nullptr)
             {
-                text.insert(0, this->getAnsiCode());
+                if (!this->getAnsiCode().empty())
+                {
+                    text.insert(0, this->getAnsiCode());
+                    text.append(this->ansiReset);
+                }
+            }
+            else
+            {
+                text.insert(0, *ansiCode);
                 text.append(this->ansiReset);
             }
         }
@@ -85,13 +93,13 @@ namespace axologl
     public:
         virtual ~Logger() = default;
 
-        void log(std::string& text)
+        void log(std::string& text, const std::string* ansiCode = nullptr)
         {
             if (shouldLog())
             {
                 format(text);
                 logToFile(text);
-                if (_ansi) colorize(text);
+                if (_ansi) colorize(text, ansiCode);
                 logToStdout(text);
                 logToStderr(text);
             }

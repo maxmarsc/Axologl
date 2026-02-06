@@ -28,6 +28,8 @@ void testOutput(const std::string& text)
     axologl::warn(text + ": Testing warning output");
     axologl::error(text + ": Testing error output");
     axologl::fatal(text + ": Testing fatal output");
+    axologl::success(text + ": Testing success output");
+    axologl::failure(text + ": Testing failure output");
 }
 
 void testLogLevelChange(const axologl::LogLevel level)
