@@ -4,6 +4,19 @@ A simple logging library for Nintendo Switch homebrew designed to integrate with
 
 ---
 
+# Table of Contents
+
+- [Background](#background)
+    - [Why Axologl?](#why-axologl)
+- [Install](#install)
+- [Usage](#usage)
+- [Configuration](#configuration)
+    - [Runtime Configuration](#runtime-configuration)
+- [API](#api)
+- [Thanks](#thanks)
+- [Contributing](#contributing)
+- [Licence](#licence)
+
 # Background
 
 Logging can seem fairly trivial in most projects, and it's really no different in a Switch homebrew project. While
@@ -148,6 +161,6 @@ PRs are welcome (especially if you can teach me something while improving the co
 
 ---
 
-# License
+# Licence
 
-Axologl is released under the GNU General Public License v3.0. You can find the full licence [here](LICENSE)
+Axologl is released under the GNU General Public License v3.0. You can find the full licence [here](LICENSE).
