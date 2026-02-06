@@ -43,16 +43,25 @@ int main(int argc, char** argv)
 {
     consoleInit(nullptr);
 
-    const axologl::AxologlOptions options = {
-        axologl::Debug,
-        {
-            true,
-            false,
-            true
-        },
-        true,
-        "axologl/test.log"
-    };
+    const axologl::AxologlOptions options;
+    options.logLevel = axologl::Debug;
+    options.nxLinkOpts.enable = true;
+    options.nxLinkOpts.redirectStdout = false;
+    options.nxLinkOpts.redirectStderr = true;
+    options.ansiOutput = true;
+    options.logPath = "axologl/test.log";
+
+    // The options could also be defined in one go thus:
+    // const axologl::AxologlOptions options = {
+    //     axologl::Debug,
+    //     {
+    //         true,
+    //         false,
+    //         true
+    //     },
+    //     true,
+    //     "axologl/test.log"
+    // };
 
     axologl::configure(options);
     axologl::printConfiguration();

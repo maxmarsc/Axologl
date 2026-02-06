@@ -32,11 +32,20 @@ namespace axologl
         Raw
     };
 
+    /**
+     * @struct NxLinkOptions
+     *
+     * @brief A collection of configuration options for nxlink
+     *
+     * @param enable            Whether to enable nxlink
+     * @param redirectStdout    Whether to forward `stdout` to nxlink host
+     * @param redirectStderr    Whether to forward `stderr` to nxlink host
+     */
     struct NxLinkOptions
     {
-        bool enable = false;
-        bool redirectStdout = false;
-        bool redirectStderr = false;
+        mutable bool enable = false;
+        mutable bool redirectStdout = false;
+        mutable bool redirectStderr = false;
     };
 
     struct FileLoggerOptions
@@ -46,12 +55,22 @@ namespace axologl
         bool logStderr = false;
     };
 
+    /**
+     * @struct AxologlOptions
+     *
+     * @brief A collection of configuration-time options for Axologl
+     *
+     * @param logLevel      The logging level to use by default
+     * @param nxLinkOpts    A collection of options to configure nxlink
+     * @param ansiOutput    Whether ANSI colours should be used
+     * @param logPath       Where Axologl should write logs to
+     */
     struct AxologlOptions
     {
-        LogLevel logLevel = Warning;
-        NxLinkOptions nxLinkOpts;
-        bool ansiOutput = true;
-        std::string logPath;
+        mutable LogLevel logLevel = Warning;
+        mutable NxLinkOptions nxLinkOpts;
+        mutable bool ansiOutput = true;
+        mutable std::string logPath;
     };
 }
 

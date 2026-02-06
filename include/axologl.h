@@ -192,10 +192,11 @@ namespace axologl
      * Log a plain, unprefixed message
      *
      * @param text
+     * @param color (Optional) An ANSI color code to colorize the message
      */
-    inline void log(const std::string& text)
+    inline void log(const std::string& text, const std::string* color = nullptr)
     {
-        _axologl->log(text);
+        _axologl->log(text, color);
     }
 
     inline void debug(const std::string& text)
