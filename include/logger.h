@@ -33,7 +33,7 @@ namespace axologl
 
     class Logger
     {
-        std::string ansiReset = "\033[0m";
+        static constexpr std::string_view ansiReset = "\033[0m";
 
         void format(std::string& text)
         {
@@ -87,8 +87,8 @@ namespace axologl
         }
 
     protected:
-        virtual std::string getPrefix() = 0;
-        virtual std::string getAnsiCode() = 0;
+        virtual std::string_view getPrefix() = 0;
+        virtual std::string_view getAnsiCode() = 0;
         virtual LogLevel getLogLevel() = 0;
 
     public:

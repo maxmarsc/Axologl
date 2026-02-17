@@ -24,17 +24,17 @@ namespace axologl::logger
 {
     class RawLogger : public Logger
     {
-        const LogLevel logLevel = Raw;
-        const std::string prefix;
-        const std::string ansiCode;
+        static constexpr LogLevel logLevel = Raw;
+        static constexpr std::string_view prefix = "RAW";
+        static constexpr std::string_view ansiCode = "\033[37m";
 
     protected:
-        std::string getPrefix() override
+        std::string_view getPrefix() override
         {
             return prefix;
         }
 
-        std::string getAnsiCode() override
+        std::string_view getAnsiCode() override
         {
             return ansiCode;
         }
