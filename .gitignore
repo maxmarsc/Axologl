@@ -2,8 +2,13 @@ build
 debug
 release
 lib
+install
 *.bz2
 *.elf
 *.nacp
 *.nro
 compile_commands.json
+
+.vscode
+.cache
+.clangd
