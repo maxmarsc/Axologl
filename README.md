@@ -55,6 +55,14 @@ INCLUDES    :=  include <your_dependency_folder>/Axologl/include
 ## CMake
 This library also supports CMake, so you can either use it as a submodule or use `FetchContent`.
 
+CMake will require a toolchain file to provide the build configuration. One is provided in the `cmake/toolchain` folder. You can use is at follows:
+
+```shell
+cmake -DCMAKE_TOOLCHAIN_FILE=cmake/toolchain/switch.cmake -B build -S .
+cmake --build build
+cmake --install build --prefix install # Optional, for installation support
+```
+
 ### Submodule
 ```shell
 git submodule add https://github.com/ixalsera/Axologl <your_dependency_folder>/Axologl
