@@ -94,15 +94,18 @@ namespace axologl
     public:
         virtual ~Logger() = default;
 
-        void log(std::string& text, const std::string* ansiCode = nullptr)
+        void log(std::string& text, bool logToConsole, const std::string* ansiCode = nullptr)
         {
             if (shouldLog())
             {
                 format(text);
                 logToFile(text);
                 if (_ansi) colorize(text, ansiCode);
-                logToStdout(text);
-                logToStderr(text);
+                if (logToConsole)
+                {
+                    logToStdout(text);
+                    logToStderr(text);
+                }
             }
         }
     };

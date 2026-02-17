@@ -43,9 +43,20 @@ namespace axologl
         logger::FatalLogger fatalLogger;
         logger::RawLogger rawLogger;
         bool nxlinkEnabled = false;
+        PrintConsole* console = nullptr;
+
+        bool canLogToConsole() const {
+            bool consoleAvailable = false;
+            if (console) {
+                consoleAvailable = console->consoleInitialised;
+            } else {
+                consoleAvailable = consoleGetDefault()->consoleInitialised;
+            }
+            return consoleAvailable || nxlinkEnabled;
+        }
 
     public:
-        explicit Axologl(const NxLinkOptions& opts)
+        explicit Axologl(const NxLinkOptions& opts, PrintConsole* console) : console(console)
         {
             if (opts.enable)
             {
@@ -63,7 +74,8 @@ namespace axologl
             }
         }
 
-        void enableNxLink(const NxLinkOptions& opts) {
+        void enableNxLink(const NxLinkOptions& opts)
+        {
             if (!nxlinkEnabled)
             {
                 nxlinkEnabled = true;
@@ -72,12 +84,18 @@ namespace axologl
             }
         }
 
-        void disableNxLink() {
+        void disableNxLink()
+        {
             if (nxlinkEnabled)
             {
                 socketExit();
                 nxlinkEnabled = false;
             }
+        }
+
+        inline void setConsole(PrintConsole* console)
+        {
+            this->console = console;
         }
 
         [[nodiscard]] bool getNxlinkEnabled() const
@@ -87,37 +105,37 @@ namespace axologl
 
         void debug(std::string text)
         {
-            this->debugLogger.log(text);
+            this->debugLogger.log(text, canLogToConsole());
         }
 
         void info(std::string text)
         {
-            this->infoLogger.log(text);
+            this->infoLogger.log(text, canLogToConsole());
         }
 
         void notice(std::string text)
         {
-            this->noticeLogger.log(text);
+            this->noticeLogger.log(text, canLogToConsole());
         }
 
         void warn(std::string text)
         {
-            this->warnLogger.log(text);
+            this->warnLogger.log(text, canLogToConsole());
         }
 
         void error(std::string text)
         {
-            this->errorLogger.log(text);
+            this->errorLogger.log(text, canLogToConsole());
         }
 
         void fatal(std::string text)
         {
-            this->fatalLogger.log(text);
+            this->fatalLogger.log(text, canLogToConsole());
         }
 
         void log(std::string text, const std::string* ansiCode = nullptr)
         {
-            this->rawLogger.log(text, ansiCode);
+            this->rawLogger.log(text, canLogToConsole(), ansiCode);
         }
     };
 
@@ -152,7 +170,7 @@ namespace axologl
             _logfileEnabled = _fileLogger && _fileLogger->ready();
         }
 
-        _axologl = std::make_unique<Axologl>(options.nxLinkOpts);
+        _axologl = std::make_unique<Axologl>(options.nxLinkOpts, options.console);
         if (!_logfileEnabled)
         {
             _axologl->error("Unable to create file logger; file logging disabled!");
@@ -202,7 +220,7 @@ namespace axologl
     {
         _axologl->enableNxLink(opts);
     }
-    
+
     inline void disableNxLink()
     {
         _axologl->disableNxLink();
@@ -211,6 +229,11 @@ namespace axologl
     inline void setLogLevel(const LogLevel level)
     {
         _logLevel = level;
+    }
+
+    inline void setConsole(PrintConsole* console)
+    {
+        _axologl->setConsole(console);
     }
 
     /**

@@ -21,6 +21,8 @@
 
 #include <string>
 
+#include <switch.h>
+
 namespace axologl
 {
     enum LogLevel
@@ -73,6 +75,7 @@ namespace axologl
         mutable NxLinkOptions nxLinkOpts;
         mutable bool ansiOutput = true;
         mutable std::string logPath;
+        mutable PrintConsole* console = nullptr;
     };
 }
 
