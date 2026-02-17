@@ -19,6 +19,8 @@
 #ifndef AXOLOGL_TYPES_H
 #define AXOLOGL_TYPES_H
 
+#include <string>
+
 namespace axologl
 {
     enum LogLevel

@@ -86,9 +86,9 @@ namespace axologl
         }
 
     protected:
-        virtual std::string getPrefix();
-        virtual std::string getAnsiCode();
-        virtual LogLevel getLogLevel();
+        virtual std::string getPrefix() = 0;
+        virtual std::string getAnsiCode() = 0;
+        virtual LogLevel getLogLevel() = 0;
 
     public:
         virtual ~Logger() = default;
