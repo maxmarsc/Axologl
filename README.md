@@ -37,7 +37,10 @@ Axologl popped in to my head.
 # Install
 
 Axologl is a header-only library and as such the `include` folder can be easily dropped in to any Switch homebrew
-project based on `libnx`/devkitPro. Alternatively, you can link it as a submodule in your project with:
+project based on `libnx`/devkitPro. 
+
+## git submodule
+Alternatively, you can link it as a submodule in your project with:
 
 ```shell
 git submodule add https://github.com/ixalsera/Axologl <your_dependency_folder>/Axologl
@@ -47,6 +50,35 @@ Then don't forget to include it in your Makefile under `INCLUDES`!
 
 ```makefile
 INCLUDES    :=  include <your_dependency_folder>/Axologl/include
+```
+
+## CMake
+This library also supports CMake, so you can either use it as a submodule or use `FetchContent`.
+
+### Submodule
+```shell
+git submodule add https://github.com/ixalsera/Axologl <your_dependency_folder>/Axologl
+```
+
+Then, in your `CMakeLists.txt`:
+```cmake
+add_subdirectory(<your_dependency_folder>/Axologl)
+target_link_libraries(<your_target> PRIVATE axologl::axologl)
+```
+### FetchContent
+```cmake
+include(FetchContent)
+FetchContent_Declare(
+    axologl
+    GIT_REPOSITORY https://github.com/ixalsera/Axologl.git
+    GIT_TAG        main
+)
+FetchContent_MakeAvailable(axologl)
+```
+
+Then, in your `CMakeLists.txt`:
+```cmake
+target_link_libraries(<your_target> PRIVATE axologl::axologl)
 ```
 
 ---
