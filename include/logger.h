@@ -27,9 +27,6 @@
 
 namespace axologl
 {
-    // forward declaration of FileLogger
-    class FileLogger;
-
     extern bool _ansi;
     extern LogLevel _logLevel;
     extern std::unique_ptr<FileLogger> _fileLogger;
