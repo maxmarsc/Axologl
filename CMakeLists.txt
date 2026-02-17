@@ -10,7 +10,7 @@ if(NOT SWITCH)
     message(FATAL_ERROR "This project is intended to be built for the Nintendo Switch. Please use the appropriate toolchain file.")
 endif()
 
-list(APPEND CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake/modules)
+list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake/modules)
 find_package(Libnx REQUIRED)
 
 # Since it is header-only, we use an INTERFACE library.
