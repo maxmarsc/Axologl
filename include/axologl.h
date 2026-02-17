@@ -49,9 +49,7 @@ namespace axologl
         {
             if (opts.enable)
             {
-                nxlinkEnabled = true;
-                socketInitializeDefault();
-                nxlinkConnectToHost(opts.redirectStdout, opts.redirectStderr);
+                enableNxLink(opts);
             }
             debug("Axologl Initialised!");
         }
@@ -62,6 +60,23 @@ namespace axologl
             if (nxlinkEnabled)
             {
                 socketExit();
+            }
+        }
+
+        void enableNxLink(const NxLinkOptions& opts) {
+            if (!nxlinkEnabled)
+            {
+                nxlinkEnabled = true;
+                socketInitializeDefault();
+                nxlinkConnectToHost(opts.redirectStdout, opts.redirectStderr);
+            }
+        }
+
+        void disableNxLink() {
+            if (nxlinkEnabled)
+            {
+                socketExit();
+                nxlinkEnabled = false;
             }
         }
 
@@ -181,6 +196,16 @@ namespace axologl
     inline void disableAnsi()
     {
         _ansi = false;
+    }
+
+    inline void enableNxLink(const NxLinkOptions& opts)
+    {
+        _axologl->enableNxLink(opts);
+    }
+    
+    inline void disableNxLink()
+    {
+        _axologl->disableNxLink();
     }
 
     inline void setLogLevel(const LogLevel level)
