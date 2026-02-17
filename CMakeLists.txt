@@ -11,6 +11,9 @@ if(NOT SWITCH)
 endif()
 
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake/modules)
+
+include(SwitchTools)
+
 find_package(Libnx REQUIRED)
 
 # Since it is header-only, we use an INTERFACE library.
@@ -31,9 +34,13 @@ option(AXOLOGL_BUILD_TESTS "Build Axologl tests" ${PROJECT_IS_TOP_LEVEL})
 if(AXOLOGL_BUILD_TESTS)
     add_executable(axologl_test test/main.cpp)
     target_link_libraries(axologl_test PRIVATE axologl::axologl)
-    target_link_options(axologl_test PRIVATE 
-        -specs=${LIBNX}/switch.specs
+    set_target_properties(
+    axologl_test
+    PROPERTIES APP_TITLE "Axologl Test"
+                APP_AUTHOR "maxmarsc"
+                APP_VERSION "1.0.0"
     )
+    add_nro_target(axologl_test)
 endif()
 
 # Installation Support
