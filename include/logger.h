@@ -19,6 +19,7 @@
 #ifndef AXOLOGL_LOGGER_H
 #define AXOLOGL_LOGGER_H
 
+#include "file.h"
 #include <iostream>
 #include <string>
 
@@ -26,9 +27,12 @@
 
 namespace axologl
 {
+    // forward declaration of FileLogger
+    class FileLogger;
+
     extern bool _ansi;
     extern LogLevel _logLevel;
-    extern FileLogger* _fileLogger;
+    extern std::unique_ptr<FileLogger> _fileLogger;
 
     class Logger
     {

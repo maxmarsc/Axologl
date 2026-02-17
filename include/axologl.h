@@ -106,8 +106,8 @@ namespace axologl
         }
     };
 
-    inline Axologl* _axologl = nullptr;
-    inline FileLogger* _fileLogger = nullptr;
+    inline std::unique_ptr<Axologl> _axologl = nullptr;
+    inline std::unique_ptr<FileLogger> _fileLogger = nullptr;
     inline LogLevel _logLevel;
     inline bool _ansi = false;
     inline bool _logfileEnabled = false;
@@ -133,11 +133,11 @@ namespace axologl
         if (!options.logPath.empty())
         {
             _logPath = options.logPath;
-            _fileLogger = new FileLogger(options.logPath);
+            _fileLogger = std::make_unique<FileLogger>(options.logPath);
             _logfileEnabled = _fileLogger && _fileLogger->ready();
         }
 
-        _axologl = new Axologl(options.nxLinkOpts);
+        _axologl = std::make_unique<Axologl>(options.nxLinkOpts);
         if (!_logfileEnabled)
         {
             _axologl->error("Unable to create file logger; file logging disabled!");
@@ -149,7 +149,7 @@ namespace axologl
      */
     inline void teardown()
     {
-        delete _axologl;
+        _axologl.reset();
     }
 
     /**
